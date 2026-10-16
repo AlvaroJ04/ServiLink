@@ -4,7 +4,7 @@ import { ClientDashboard } from '../pages/dashboards/ClientDashboard';
 import { WorkerDashboard } from '../pages/dashboards/WorkerDashboard';
 import { AdminPanel } from '../pages/dashboards/AdminPanel';
 import { LoginPage } from '../pages/auth/LoginPage';
-import { RegisterPage } from '../pages/auth/RegisterPage';
+//import { RegisterPage } from '../pages/auth/RegisterPage';
 // Importaremos el Login en el siguiente paso
 
 export const AppRouter = () => {
@@ -13,7 +13,7 @@ export const AppRouter = () => {
       <Routes>
         {/* Rutas Públicas */}
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/registro" element={<RegisterPage />} />
+        <Route path="/registro" element={<LoginPage />} />
         
         {/* Rutas Privadas protegidas por Rol (HU-02) */}
         <Route element={<PrivateRoute allowedRoles={['CLIENTE']} />}>

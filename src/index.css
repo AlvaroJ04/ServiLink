@@ -1,37 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
 :root {
-  /* Paleta de colores base (Ajusta estos hex según tu Figma) */
-  --primary-color: #0056b3;
-  --primary-hover: #004494;
-  --success-color: #28a745;
-  --background-color: #f4f7f6;
-  --text-main: #333333;
-  --text-muted: #666666;
-  --border-color: #dddddd;
-  --card-bg: #ffffff;
+  /* Tipografías */
+  --font-display: 'Fraunces', serif;
+  --font-sans: 'Outfit', sans-serif;
 
-  /* Tipografía */
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  color-scheme: light;
+  /* Paleta ServiLink */
+  --color-brand-navy: #0f1f3d;
+  --color-brand-navy-dark: #080f1e;
+  --color-brand-blue: #1a3a6b;
+  --color-brand-amber: #e8a020;
+  --color-brand-slate: #4a5f80;
+  --color-brand-mist: #f0f3f8;
+  --color-brand-cream: #faf8f4;
+  --color-brand-success: #1a7a4a;
+  
+  /* Colores de formulario */
+  --border-input: #d0daea;
+  --label-color: #2d3f5e;
 }
 
-/* Reset básico */
-* {
+*, *::before, *::after {
   box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  background: var(--color-brand-cream);
+  color: var(--color-brand-navy);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
   margin: 0;
   padding: 0;
 }
 
-body {
-  background-color: var(--background-color);
-  color: var(--text-main);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Estilos globales para enlaces */
 a {
-  color: var(--primary-color);
+  color: var(--color-brand-blue);
   text-decoration: none;
   font-weight: 500;
 }

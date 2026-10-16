@@ -1,85 +1,112 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth, type Role } from '../../context/AuthContext';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth, type Role } from "../../context/AuthContext";
+import { AuthLayout } from "../../layouts/AuthLayout";
+import { RegisterClientForm } from "../../components/auth/RegisterClientForm";
+import { RegisterWorkerForm } from "../../components/auth/RegisterWorkerForm";
+
+type Tab = "login" | "register-client" | "register-worker";
 
 export const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState<Role>('CLIENTE');
+  const [tab, setTab] = useState<Tab>("login");
+  const [showPass, setShowPass] = useState(false);
+  const [email, setEmail] = useState("carlos.aguilar@email.com");
+  const [password, setPassword] = useState("SecurePass123!");
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handleLogin = (selectedRole: Role) => {
     const mockUser = {
-      id: '123',
-      name: email.split('@')[0],
-      email: email,
-      role: role,
+      id: "123",
+      name: email.split("@")[0] || "Usuario",
+      email: email || "usuario@correo.com",
+      role: selectedRole,
     };
-    const mockToken = 'fake-jwt-token-12345';
+    login(mockUser, "fake-jwt-token-12345");
 
-    login(mockUser, mockToken);
-
-    if (role === 'CLIENTE') navigate('/cliente');
-    else if (role === 'TRABAJADOR') navigate('/trabajador');
-    else if (role === 'ADMIN') navigate('/admin');
+    if (selectedRole === "CLIENTE") navigate("/cliente");
+    else if (selectedRole === "TRABAJADOR") navigate("/trabajador");
+    else if (selectedRole === "ADMIN") navigate("/admin");
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2 className="auth-title">Iniciar Sesión - ServiLink</h2>
-        
-        <form onSubmit={handleLogin}>
-          
-          <div className="form-group">
-            <label>Email:</label>
-            <input 
-              type="email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              required 
-              className="form-input"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Contraseña:</label>
-            <input 
-              type="password" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              required 
-              className="form-input"
-            />
-          </div>
-
-          {/* Selector temporal (le dejamos un pequeño estilo en línea para diferenciarlo como zona de pruebas) */}
-          <div className="form-group" style={{ background: '#f8f9fa', padding: '1rem', borderRadius: '4px', marginTop: '1.5rem' }}>
-            <label>Simular Rol (Entorno de pruebas):</label>
-            <select 
-              value={role} 
-              onChange={(e) => setRole(e.target.value as Role)}
-              className="form-input"
-            >
-              <option value="CLIENTE">Cliente</option>
-              <option value="TRABAJADOR">Trabajador</option>
-              <option value="ADMIN">Administrador</option>
-            </select>
-          </div>
-
-          <button type="submit" className="btn-primary">
-            Ingresar
+    <AuthLayout>
+      {/* Pestañas de Navegación */}
+      <div className="flex rounded-xl p-1 mb-8" style={{ background: "#e8edf5" }}>
+        {[
+          { id: "login", label: "Iniciar sesión" },
+          { id: "register-client", label: "Soy cliente" },
+          { id: "register-worker", label: "Soy técnico" },
+        ].map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setTab(t.id as Tab)}
+            className="flex-1 py-2 rounded-lg text-xs font-medium transition-all"
+            style={{
+              background: tab === t.id ? "white" : "transparent",
+              color: tab === t.id ? "#0f1f3d" : "#6b82a0",
+              boxShadow: tab === t.id ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
+            }}
+          >
+            {t.label}
           </button>
-        </form>
-
-        <p style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-          ¿No tienes cuenta? <Link to="/registro">Regístrate aquí</Link>
-        </p>
+        ))}
       </div>
-    </div>
+
+      {/* Renderizado Condicional Limpio */}
+      {tab === "login" && (
+        <div>
+          <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "'Fraunces', serif", color: "#0f1f3d" }}>
+            Bienvenido de nuevo
+          </h1>
+          <p className="text-sm mb-8" style={{ color: "#6b82a0" }}>Ingresa con tu correo y contraseña</p>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: "#2d3f5e" }}>Correo electrónico</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all focus:ring-2"
+                style={{ borderColor: "#d0daea", background: "white", color: "#0f1f3d" }}
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: "#2d3f5e" }}>Contraseña</label>
+              <div className="relative">
+                <input
+                  type={showPass ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border text-sm outline-none"
+                  style={{ borderColor: "#d0daea", background: "white", color: "#0f1f3d" }}
+                />
+                <button onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs" style={{ color: "#6b82a0" }}>
+                  {showPass ? "Ocultar" : "Ver"}
+                </button>
+              </div>
+            </div>
+            
+            {/* Botones de simulación de roles (Eliminar al conectar backend) */}
+            <div className="p-3 rounded-xl border" style={{ borderColor: "#e4eaf2", background: "#f0f3f8" }}>
+              <p className="text-xs mb-2" style={{ color: "#6b82a0" }}>Ingresar como (demo):</p>
+              <div className="flex gap-2">
+                <button onClick={() => handleLogin('CLIENTE')} className="px-3 py-1.5 rounded-lg text-xs font-medium border" style={{ borderColor: "#d0daea", background: "white", color: "#0f1f3d" }}>Cliente</button>
+                <button onClick={() => handleLogin('TRABAJADOR')} className="px-3 py-1.5 rounded-lg text-xs font-medium border" style={{ borderColor: "#d0daea", background: "white", color: "#0f1f3d" }}>Técnico</button>
+                <button onClick={() => handleLogin('ADMIN')} className="px-3 py-1.5 rounded-lg text-xs font-medium border" style={{ borderColor: "#d0daea", background: "white", color: "#0f1f3d" }}>Admin</button>
+              </div>
+            </div>
+
+            <button onClick={() => handleLogin('CLIENTE')} className="w-full py-3 rounded-xl font-semibold text-sm transition-all hover:opacity-90" style={{ background: "#0f1f3d", color: "white" }}>
+              Iniciar sesión
+            </button>
+          </div>
+        </div>
+      )}
+
+      {tab === "register-client" && <RegisterClientForm />}
+      {tab === "register-worker" && <RegisterWorkerForm />}
+    </AuthLayout>
   );
 };
