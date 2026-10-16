@@ -8,9 +8,9 @@ interface PrivateRouteProps {
 export const PrivateRoute = ({ allowedRoles }: PrivateRouteProps) => {
   const { isAuthenticated, user } = useAuth();
 
-  // Si no está autenticado, lo enviamos al login
+  // Si no está autenticado, lo enviamos a la pagina de inicio
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   // Si la ruta exige un rol específico y el usuario no lo tiene, lo bloqueamos

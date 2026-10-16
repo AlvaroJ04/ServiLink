@@ -87,6 +87,23 @@ export const LoginPage = () => {
                 </button>
               </div>
             </div>
+
+            <div className="flex items-center justify-between mt-1 mb-2">
+              <label className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: "#6b82a0" }}>
+                <input 
+                  type="checkbox" 
+                  className="rounded border-gray-300 text-[#0f1f3d] focus:ring-[#0f1f3d] w-4 h-4 cursor-pointer" 
+                />
+                Recordarme
+              </label>
+              <button 
+                type="button" 
+                className="text-sm font-medium hover:underline transition-all" 
+                style={{ color: "#1a3a6b" }}
+              >
+                ¿Olvidaste tu contraseña?
+              </button>
+            </div>
             
             {/* Botones de simulación de roles (Eliminar al conectar backend) */}
             <div className="p-3 rounded-xl border" style={{ borderColor: "#e4eaf2", background: "#f0f3f8" }}>
