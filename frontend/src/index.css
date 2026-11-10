@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+:root {
+  /* Tipografías */
+  --font-display: 'Fraunces', serif;
+  --font-sans: 'Outfit', sans-serif;
+
+  /* Paleta ServiLink */
+  --color-brand-navy: #0f1f3d;
+  --color-brand-navy-dark: #080f1e;
+  --color-brand-blue: #1a3a6b;
+  --color-brand-amber: #e8a020;
+  --color-brand-slate: #4a5f80;
+  --color-brand-mist: #f0f3f8;
+  --color-brand-cream: #faf8f4;
+  --color-brand-success: #1a7a4a;
+  
+  /* Colores de formulario */
+  --border-input: #d0daea;
+  --label-color: #2d3f5e;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  background: var(--color-brand-cream);
+  color: var(--color-brand-navy);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: var(--color-brand-blue);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+}
