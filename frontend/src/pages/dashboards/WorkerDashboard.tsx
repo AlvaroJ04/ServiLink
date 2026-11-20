@@ -3,6 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { StatusBadge } from "../../components/worker/StatusBadge";
 import { ProfileForm } from "../../components/worker/ProfileForm";
 import { DragDropUpload } from "../../components/worker/DragDropUpload";
+import { IncomingRequestsPanel } from "../../components/worker/IncomingRequestsPanel";
 import { ApiError, apiDocumentos, apiPerfil, ETIQUETA_ESTADO, type Documento, type PerfilTrabajador } from "../../api";
 import { useCatalogos } from "../../hooks";
 import { MensajeError } from "../../components/ui/Mensajes";
@@ -21,6 +22,7 @@ export const WorkerDashboard = () => {
   const [documentos, setDocumentos] = useState<Documento[]>([]);
   const [cargado, setCargado] = useState(false);
   const [error, setError] = useState("");
+  const [vista, setVista] = useState<"perfil" | "solicitudes">("perfil");
 
   const cargar = useCallback(async () => {
     try {
@@ -57,7 +59,7 @@ export const WorkerDashboard = () => {
       </nav>
 
       <div className="p-8">
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-5xl mx-auto space-y-6">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 bg-white p-6 rounded-xl border border-[#d0daea] shadow-sm">
             <div>
               <h1 className="text-2xl font-bold text-[#0f1f3d]" style={{ fontFamily: "'Fraunces', serif" }}>Panel de Técnico</h1>
@@ -70,9 +72,37 @@ export const WorkerDashboard = () => {
             </div>
           </div>
 
+          {/* Navegación interna del Técnico */}
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => setVista("perfil")}
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                vista === "perfil"
+                  ? "bg-[#0f1f3d] text-white"
+                  : "bg-white text-[#6b82a0] border border-[#d0daea] hover:text-[#0f1f3d]"
+              }`}
+            >
+              Mi Perfil y Documentación
+            </button>
+            <button
+              type="button"
+              onClick={() => setVista("solicitudes")}
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                vista === "solicitudes"
+                  ? "bg-[#0f1f3d] text-white"
+                  : "bg-white text-[#6b82a0] border border-[#d0daea] hover:text-[#0f1f3d]"
+              }`}
+            >
+              Solicitudes, Chat y Contratos
+            </button>
+          </div>
+
           <MensajeError texto={error || errorCatalogo} />
 
-          {!cargado || !catalogos ? (
+          {vista === "solicitudes" ? (
+            <IncomingRequestsPanel />
+          ) : !cargado || !catalogos ? (
             <p className="text-sm text-[#6b82a0]">Cargando tu información...</p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

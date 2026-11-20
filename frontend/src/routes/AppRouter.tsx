@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { PrivateRoute } from './PrivateRoute';
 import { ClientDashboard } from '../pages/dashboards/ClientDashboard';
+import { ClientRequestsPage } from '../pages/ClientRequestsPage';
 import { WorkerDashboard } from '../pages/dashboards/WorkerDashboard';
 import { AdminPanel } from '../pages/dashboards/AdminPanel';
 import { LoginPage } from '../pages/auth/LoginPage';
@@ -18,17 +19,20 @@ export const AppRouter = () => {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage key="login" />} />
           <Route path="/registro" element={<LoginPage key="registro" />} />
-          
-          {/* Rutas Privadas */}
+
+          {/* Rutas Privadas - Cliente */}
           <Route element={<PrivateRoute allowedRoles={['CLIENTE']} />}>
+            <Route path="/cliente/solicitudes" element={<ClientRequestsPage />} />
             <Route path="/cliente/*" element={<ClientDashboard />} />
             <Route path="/perfil/:id" element={<WorkerProfile />} />
           </Route>
 
+          {/* Rutas Privadas - Trabajador */}
           <Route element={<PrivateRoute allowedRoles={['TRABAJADOR']} />}>
             <Route path="/trabajador/*" element={<WorkerDashboard />} />
           </Route>
 
+          {/* Rutas Privadas - Administrador */}
           <Route element={<PrivateRoute allowedRoles={['ADMIN']} />}>
             <Route path="/admin/*" element={<AdminPanel />} />
           </Route>
@@ -37,7 +41,7 @@ export const AppRouter = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
-      
+
       {/* Barra de navegación global persistente */}
       <BottomNavBar />
     </BrowserRouter>

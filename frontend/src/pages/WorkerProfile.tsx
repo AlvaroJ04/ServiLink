@@ -4,12 +4,14 @@ import { apiTrabajadorPublico, type TrabajadorPublico } from "../api";
 import { Reputacion } from "../components/ui/Estrellas";
 import { formatoCOP } from "../formato";
 import { MensajeError } from "../components/ui/Mensajes";
+import { ServiceRequestModal } from "../components/client/ServiceRequestModal";
 
 export const WorkerProfile = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [w, setW] = useState<TrabajadorPublico | null>(null);
   const [error, setError] = useState("");
+  const [modalAbierto, setModalAbierto] = useState(false);
 
   useEffect(() => {
     apiTrabajadorPublico(Number(id)).then(setW).catch((e: Error) => setError(e.message));
@@ -22,7 +24,14 @@ export const WorkerProfile = () => {
           <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm bg-[#e8a020] text-[#0f1f3d]">SL</div>
           <span className="text-xl font-semibold text-white" style={{ fontFamily: "'Fraunces', serif" }}>ServiLink</span>
         </div>
-        <button className="text-sm font-medium text-white hover:underline" onClick={() => navigate("/cliente")}>Volver al buscador</button>
+        <div className="flex items-center gap-6">
+          <button className="text-sm font-medium text-[#e8a020] hover:underline" onClick={() => navigate("/cliente/solicitudes")}>
+            Mis solicitudes
+          </button>
+          <button className="text-sm font-medium text-white hover:underline" onClick={() => navigate("/cliente")}>
+            Volver al buscador
+          </button>
+        </div>
       </nav>
 
       {error && <div className="max-w-5xl mx-auto px-8 py-8"><MensajeError texto={error} /></div>}
@@ -81,12 +90,26 @@ export const WorkerProfile = () => {
                 <h3 className="font-bold text-[#0f1f3d] mb-2">Tarifa base</h3>
                 <p className="text-2xl font-bold text-[#0f1f3d] mb-1">{formatoCOP(w.tarifa_base)}</p>
                 {w.tarifa_base != null && <p className="text-xs text-[#6b82a0] mb-4">por hora • más materiales</p>}
-                <button disabled title="La solicitud de servicios llega en el siguiente sprint" className="w-full py-3 rounded-xl font-bold bg-[#e8a020] text-[#0f1f3d] opacity-50 cursor-not-allowed">
-                  Solicitar (próximamente)
+                <button
+                  type="button"
+                  onClick={() => setModalAbierto(true)}
+                  className="w-full py-3 rounded-xl font-bold bg-[#e8a020] text-[#0f1f3d] hover:opacity-90 transition-all"
+                >
+                  Solicitar servicio
                 </button>
               </div>
             </aside>
           </div>
+
+          <ServiceRequestModal
+            isOpen={modalAbierto}
+            onClose={() => setModalAbierto(false)}
+            idPerfilTrabajador={w.id_perfil}
+            nombreTrabajador={w.nombre}
+            servicios={w.servicios}
+            tarifaBase={w.tarifa_base}
+            onCreada={() => navigate("/cliente/solicitudes")}
+          />
         </>
       )}
     </div>

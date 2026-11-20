@@ -91,6 +91,13 @@ export const ClientDashboard = () => {
           <span className="text-xl font-semibold text-white" style={{ fontFamily: "'Fraunces', serif" }}>ServiLink</span>
         </div>
         <div className="flex items-center gap-6">
+          <button
+            type="button"
+            onClick={() => navigate("/cliente/solicitudes")}
+            className="px-4 py-2 rounded-xl text-xs font-bold bg-[#1a3a6b] text-white hover:opacity-90 transition-all"
+          >
+            Mis Solicitudes
+          </button>
           <span className="text-sm font-medium text-[#a8bdda]">Cliente: {user?.name || "Usuario"}</span>
           <button onClick={logout} className="text-sm font-medium hover:underline text-[#e8a020]">Cerrar sesión</button>
         </div>
