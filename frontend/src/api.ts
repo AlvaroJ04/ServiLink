@@ -161,3 +161,129 @@ export interface Resumen {
   tecnicos_verificados: number; ciudades: number; promedio_estrellas: number | null; total_resenas: number;
 }
 export const apiResumen = () => json<Resumen>('/catalogos/resumen', 'GET', undefined, false);
+
+
+// ============================================================================
+// SPRINT 3: Solicitudes (HU-08), Mensajería (HU-07) y Contratos PDF (HU-09)
+// ============================================================================
+export type EstadoSolicitud = 'PENDIENTE' | 'ACEPTADA' | 'RECHAZADA' | 'EN_CURSO' | 'FINALIZADA' | 'CANCELADA';
+
+export interface SolicitudIn {
+  id_trabajador: number; // perfil_trabajador.id_perfil
+  id_servicio: number;
+  descripcion_problema: string;
+  fecha_programada: string; // YYYY-MM-DD
+  hora_programado: string;  // HH:MM
+  duracion_estimada_horas: number;
+  valor_acordado: number;
+}
+
+export interface Solicitud {
+  id_solicitud: number;
+  id_cliente: number;
+  id_trabajador: number;
+  id_servicio: number;
+  nombre_servicio?: string;
+  nombre_cliente?: string;
+  nombre_trabajador?: string;
+  descripcion_problema: string | null;
+  fecha_programada: string;
+  hora_programado: string;
+  duracion_estimada_horas: number | null;
+  valor_acordado: number | null;
+  estado_solicitud: EstadoSolicitud;
+  tiene_contrato?: boolean;
+  estado_pago?: 'PENDIENTE' | 'SIMULADO' | 'PAGADO' | 'LIBERADO';
+  ya_calificado?: boolean;
+}
+
+export interface MensajeChat {
+  id_mensaje: number;
+  id_solicitud: number;
+  id_emisor: number;
+  nombre_emisor?: string;
+  contenido: string;
+  enviado_at: string;
+}
+
+export const apiCrearSolicitud = (d: SolicitudIn) =>
+  json<Solicitud>('/solicitudes', 'POST', d);
+
+export const apiMisSolicitudes = () =>
+  json<Solicitud[]>('/solicitudes/mis-solicitudes');
+
+export const apiDetalleSolicitud = (id: number) =>
+  json<Solicitud>(`/solicitudes/${id}`);
+
+export const apiResponderSolicitud = (id: number, accion: 'aceptar' | 'rechazar') =>
+  json<Solicitud>(`/solicitudes/${id}/${accion}`, 'PATCH');
+
+export const apiFinalizarSolicitud = (id: number) =>
+  json<Solicitud>(`/solicitudes/${id}/finalizar`, 'PATCH');
+
+export const apiMensajesSolicitud = (idSolicitud: number) =>
+  json<MensajeChat[]>(`/solicitudes/${idSolicitud}/mensajes`);
+
+export const apiEnviarMensaje = (idSolicitud: number, contenido: string) =>
+  json<MensajeChat>(`/solicitudes/${idSolicitud}/mensajes`, 'POST', { contenido });
+
+export async function apiDescargarContratoPdf(idSolicitud: number): Promise<void> {
+  const res = await pedir(`/solicitudes/${idSolicitud}/contrato`);
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank', 'noopener');
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+}
+
+// ============================================================================
+// SPRINT 4: Pagos Sandbox (HU-10), Calificaciones (HU-11) y Auditoría (HU-12)
+// ============================================================================
+export interface PagoSimuladoResp {
+  id_pago: number;
+  id_solicitud: number;
+  monto_total: number;
+  monto_plataforma: number;
+  monto_trabajador: number;
+  estado_pago: string;
+  fecha_pago: string;
+}
+
+export interface CalificacionIn {
+  id_solicitud: number;
+  estrellas: number;
+  comentario: string;
+}
+
+export interface LogAuditoria {
+  id_log?: number;
+  id_auditoria?: number;
+  id_usuario?: number | null;
+  usuario_email?: string;
+  accion: string;
+  entidad?: string;
+  detalle?: string | null;
+  created_at?: string;
+  fecha?: string;
+}
+
+export interface MetricasAdmin {
+  total_usuarios: number;
+  total_clientes: number;
+  total_trabajadores: number;
+  total_solicitudes: number;
+  solicitudes_completadas: number;
+  comisiones_generadas: number;
+  volumen_transaccionado: number;
+}
+
+export const apiSimularPago = (idSolicitud: number, metodo_sandbox: string) =>
+  json<PagoSimuladoResp>('/pagos/simular', 'POST', { id_solicitud: idSolicitud, metodo_sandbox });
+
+export const apiCrearCalificacion = (d: CalificacionIn) =>
+  json('/calificaciones', 'POST', d);
+
+export const apiMetricasAdmin = () =>
+  json<MetricasAdmin>('/admin/metricas');
+
+export const apiLogsAuditoria = () =>
+  json<LogAuditoria[]>('/admin/auditoria');
